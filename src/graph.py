@@ -28,7 +28,7 @@ class Vertex(object):
     except for `__str__`.
     """
 
-    def __init__(self, graph: "Graph", label=None):
+    def __init__(self, graph: "Graph", label=None, colour=None):
         """
         Creates a vertex, part of `graph`, with optional label `label`.
         (Labels of different vertices may be chosen the same; this does
@@ -36,20 +36,24 @@ class Vertex(object):
         representation of the graph ambiguous.)
         :param graph: The graph that this `Vertex` is a part of
         :param label: Optional parameter to specify a label for the
+        :param colour: Colour of the vertex for color refinement process
         """
         if label is None:
             label = graph._next_label()
+        if colour is None:
+            colour = 0
 
         self._graph = graph
         self.label = label
         self._incidence = {}
+        self.colour = colour
 
     def __repr__(self):
         """
         A programmer-friendly representation of the vertex.
         :return: The string to approximate the constructor arguments of the `Vertex'
         """
-        return 'Vertex(label={}, #incident={})'.format(self.label, len(self._incidence))
+        return 'Vertex(label={}, #incident={}, colour#={})'.format(self.label, len(self._incidence),self.colour)
 
     def __str__(self) -> str:
         """
