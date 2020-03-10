@@ -42,10 +42,10 @@ def color_refinement(graph):
 
 
 def test_color_refinement():
-    open_path = os.path.relpath('../graphs/examplegraph.gr', os.path.dirname(__file__))
+    open_path = os.path.relpath('../graphs/examplegraph_2.gr', os.path.dirname(__file__))
     with open(open_path, 'r') as f:
         G = load_graph(f)
         result = color_refinement(G)
-        save_path = os.path.relpath('../graphs/color_refined_examplegraph.dot', os.path.dirname(__file__))
+        save_path = os.path.relpath('../graphs/color_refined_examplegraph_2.dot', os.path.dirname(__file__))
         with open(save_path, 'w') as g:
             write_dot(result, g)
