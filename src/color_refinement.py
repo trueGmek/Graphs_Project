@@ -39,6 +39,8 @@ def have_identically_colored_neighbourhoods(u, v):
 with open("../examplegraph.gr") as f:
     G = load_graph(f)
     n = len(G.vertices)
+    list_of_dicts = []
+    tmp_dict = {}
 
     # initial coloring - each vertex by degree
     for v in G.vertices:
@@ -52,8 +54,11 @@ with open("../examplegraph.gr") as f:
         j = i
         for u, v in iter.combinations(G.vertices, 2):
             if u.colornum == v.colornum and not have_identically_colored_neighbourhoods(u, v):
-                u.colornum = n + j + 1
-                j += 1
+                tmp_dict[u.colornum] = 1
+            list_of_dicts.append(tmp_dict)
+        for dict1, dict2 in iter.combinations(list_of_dicts, 2):
+            if dict1 != dict2:
+
         curr_coloring = get_coloring(G)
         if previous_coloring == curr_coloring:
             break
