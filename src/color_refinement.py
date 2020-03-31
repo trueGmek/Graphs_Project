@@ -1,51 +1,95 @@
-import itertools as iter
-import os
 from src.graph_io import *
+import os
 
 
-def get_coloring(graph):
-    coloring = {}
-    for v in graph.vertices:
-        if v.colornum not in coloring:
-            coloring[v.colornum] = v.colornum
-        else:
-            coloring[v.colornum] += 1
-    return coloring
+def color_refinement(in_graph):
+    initialize_colornum(in_graph)
+    all_colors = []
+    dictionary_vertices_neighbour_colors = {}
+    n = len(in_graph.vertices)
 
+    for v in in_graph.vertices:
+        if v.colornum not in all_colors:
+            all_colors.append(v.colornum)
 
-def have_identically_colored_neighbourhoods(u, v):
-    if u.degree != v.degree:
+    different_colors = len(all_colors)
+
+    for v in in_graph.vertices:
+        dictionary_vertices_neighbour_colors[v.label] = {}
+
+    for v in in_graph.vertices:
+        for i in range(n + different_colors + 1):
+            dictionary_vertices_neighbour_colors[v.label][i] = 0
+
+    def count_vertices(color):
+        i = 0
+        for v in in_graph.vertices:
+            if v.colornum == color:
+                i = i + 1
+            if i > 1:
+                return True
         return False
-    for neighbour_u in u.neighbours:
-        for neighbour_v in v.neighbours:
-            if not (neighbour_u.colornum == neighbour_v.colornum and neighbour_u != neighbour_v):
-                return False
-    return True
 
+    for x in all_colors:
+        if x <= (n + different_colors):
+            ls_of_same_color_vertices = []
+            if count_vertices(x):  # if vertices with color x>=2
+                for v in in_graph.vertices:
+                    if v.colornum == x:
+                        ls_of_same_color_vertices.append(v)
 
-def color_refinement(graph):
-    G = graph
-    n = len(G.vertices)
-    for v in G.vertices:
-        v.colornum = v.degree
-    i = 0
-    while True:
-        i += 1
-        previous_coloring = get_coloring(G)
-        for u, v in iter.combinations(G.vertices, 2):
-            if u.colornum == v.colornum and not have_identically_colored_neighbourhoods(u, v):
-                u.colornum = n + i + 1
-        curr_coloring = get_coloring(G)
-        if previous_coloring == curr_coloring:
+                for v in ls_of_same_color_vertices:
+                    for w in v.neighbours:
+                        if w.colornum not in dictionary_vertices_neighbour_colors[v.label]:
+                            with open("color_refined_graph.dot", 'w') as g:
+                                write_dot(in_graph, g)
+                            exit()
+                        else:
+                            dictionary_vertices_neighbour_colors[v.label][w.colornum] += 1
+
+                seen_array = []
+                group_array = []
+
+                for v in ls_of_same_color_vertices:
+                    if v.label not in seen_array:
+                        group_of_this = [v.label]
+                        seen_array.append(v.label)
+                        for k2, val2 in dictionary_vertices_neighbour_colors.items():
+                            if dictionary_vertices_neighbour_colors[v.label] == val2 and k2 not in seen_array:
+                                group_of_this.append(k2)
+                                seen_array.append(k2)
+
+                        group_array.append(group_of_this)
+
+                for j in range(len(group_array)):
+                    for i in group_array[j]:
+                        for v in in_graph.vertices:
+                            if v.label == i:
+                                v.colornum = max(all_colors) + 1
+
+                    for v in ls_of_same_color_vertices:
+                        if v.colornum not in all_colors:
+                            all_colors.append(v.colornum)
+            else:
+                continue
+        else:
             break
-    return G
+    return in_graph
+
+
+def initialize_colornum(graph):
+    for v in graph.vertices:
+        v.colornum = v.degree
+    return graph
 
 
 def test_color_refinement():
-    open_path = os.path.relpath('../graphs/examplegraph_2.gr', os.path.dirname(__file__))
-    with open(open_path, 'r') as f:
-        G = load_graph(f)
-        result = color_refinement(G)
-        save_path = os.path.relpath('../graphs/color_refined_examplegraph_2.dot', os.path.dirname(__file__))
-        with open(save_path, 'w') as g:
-            write_dot(result, g)
+    cur_path = os.path.dirname(__file__)
+    new_path = os.path.relpath('../graphs/examplegraph.gr', cur_path)
+
+    with open(new_path, 'r') as file_stream:
+        graph_from_file = load_graph(file_stream)
+        output_graph = color_refinement(graph_from_file)
+
+    with open("color_refined_graph.dot", 'w') as file_stream:
+        write_dot(output_graph, file_stream)
