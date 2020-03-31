@@ -1,5 +1,6 @@
-from src.graph_io import *
 import os
+
+from src.graph_io import *
 
 
 def color_refinement(in_graph):
@@ -21,19 +22,10 @@ def color_refinement(in_graph):
         for i in range(n + different_colors + 1):
             dictionary_vertices_neighbour_colors[v.label][i] = 0
 
-    def count_vertices(color):
-        i = 0
-        for v in in_graph.vertices:
-            if v.colornum == color:
-                i = i + 1
-            if i > 1:
-                return True
-        return False
-
     for x in all_colors:
         if x <= (n + different_colors):
             ls_of_same_color_vertices = []
-            if count_vertices(x):  # if vertices with color x>=2
+            if count_vertices(x, in_graph):  # if vertices with color x>=2
                 for v in in_graph.vertices:
                     if v.colornum == x:
                         ls_of_same_color_vertices.append(v)
@@ -83,9 +75,19 @@ def initialize_colornum(graph):
     return graph
 
 
+def count_vertices(color, in_graph):
+    i = 0
+    for v in in_graph.vertices:
+        if v.colornum == color:
+            i = i + 1
+        if i > 1:
+            return True
+    return False
+
+
 def test_color_refinement():
     cur_path = os.path.dirname(__file__)
-    new_path = os.path.relpath('../graphs/examplegraph.gr', cur_path)
+    new_path = os.path.relpath('../graphs/example_balanced_graph_1.gr', cur_path)
 
     with open(new_path, 'r') as file_stream:
         graph_from_file = load_graph(file_stream)

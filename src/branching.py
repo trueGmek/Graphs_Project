@@ -4,17 +4,20 @@ from src.color_refinement import *
 This function will be called when we got stable colorings, so I will not check that
 '''
 
+a_dict = {'color': 'blue', 'fruit': 'apple', 'pet': 'dog'}
+
 
 def test_branching():
-    open_path = os.path.relpath('../graphs/examplegraph.gr', os.path.dirname(__file__))
+    open_path = os.path.relpath('../graphs/example_balanced_graph_1.gr', os.path.dirname(__file__))
     with open(open_path, 'r') as file:
         g = load_graph(file)
     g = color_refinement(g)
     h = g
+    print("GRAPH g = h:")
     print(g)
-    print(h)
-    print(is_balanced(g, h))
-    print(is_bijection(g, h))
+    print("color list:\n", str(get_coloring(g)))
+    print("Is balanced: ", str(is_balanced(g, h)))
+    print("Is g bijection of h: ", str(is_bijection(g, h)))
     branching(g, h)
 
 
@@ -24,19 +27,21 @@ def branching(g, h):
     index_of_color_class = 0  # index of color class that has more than two members in one graph
     first_vertex_from_color_class = None
     highest_color = 0
-    if is_balanced(g, h):
+    if not is_balanced(g, h):
         return 0
     if is_bijection(g, h):
         return 1
     num = 0
 
-    for key, value in get_coloring(g):
+    print(get_coloring(g))
+
+    for key, value in get_coloring(g).items():
         if key > highest_color:
             highest_color = key
         if value >= key + 2:
-            index_of_color_class = value
+            index_of_color_class = key
             first_vertex_from_color_class = colour_class_list[index_of_color_class][0]
-            first_vertex_from_color_class.colornum = highest_color
+            first_vertex_from_color_class.colornum = highest_color+1
             break
 
         for vertex in g.vertices:
@@ -48,6 +53,8 @@ def branching(g, h):
             if v.label == vertex.label:
                 v.colornum = highest_color
         num += branching(g, h)
+
+    print("Number of ", "K U R W A", num)
     return num
 
 
@@ -76,4 +83,14 @@ def get_colour_class_list(g):
         if v.colornum not in coloring:
             coloring[v.colornum] = []
         coloring[v.colornum].append(v)
+    return coloring
+
+
+def get_coloring(g):
+    coloring = {}
+    for v in g.vertices:
+        if v.colornum not in coloring:
+            coloring[v.colornum] = v.colornum
+        else:
+            coloring[v.colornum] += 1
     return coloring

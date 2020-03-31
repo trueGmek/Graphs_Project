@@ -41,7 +41,6 @@ class Vertex(object):
         if label is None:
             label = graph._next_label()
 
-
         self._graph = graph
         self.label = label
         self._incidence = {}
@@ -51,7 +50,7 @@ class Vertex(object):
         A programmer-friendly representation of the vertex.
         :return: The string to approximate the constructor arguments of the `Vertex'
         """
-        return 'Vertex(label={}, #incident={}, colour#={})'.format(self.label, len(self._incidence),self.colour)
+        return 'Vertex(label={}, #incident={})'.format(self.label, len(self._incidence))
 
     def __str__(self) -> str:
         """
