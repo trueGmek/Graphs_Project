@@ -1,10 +1,9 @@
 from src.color_refinement import *
+from src.color_class import ColorClass
 
 '''
 This function will be called when we got stable colorings, so I will not check that
 '''
-
-a_dict = {'color': 'blue', 'fruit': 'apple', 'pet': 'dog'}
 
 
 def test_branching():
@@ -18,7 +17,7 @@ def test_branching():
     print("color list:\n", str(get_coloring(g)))
     print("Is balanced: ", str(is_balanced(g, h)))
     print("Is g bijection of h: ", str(is_bijection(g, h)))
-    branching(g, h)
+    list_of_colour_classes_bigger_eg_than_k(get_color_classes(g), 11)
 
 
 def branching(g, h):
@@ -41,7 +40,7 @@ def branching(g, h):
         if value >= key + 2:
             index_of_color_class = key
             first_vertex_from_color_class = colour_class_list[index_of_color_class][0]
-            first_vertex_from_color_class.colornum = highest_color+1
+            first_vertex_from_color_class.colornum = highest_color + 1
             break
 
         for vertex in g.vertices:
@@ -54,7 +53,7 @@ def branching(g, h):
                 v.colornum = highest_color
         num += branching(g, h)
 
-    print("Number of ", "K U R W A", num)
+    print("Number of ", "I S O M O R P H I S M S", num, " K U R W A")
     return num
 
 
@@ -75,6 +74,23 @@ def is_bijection(g, h):
             if key != value:
                 return False
         return True
+
+
+def get_color_classes(g):
+    all_color_classes = {}
+    for v in g.vertices:
+        if v.colornum not in all_color_classes:
+            all_color_classes[v.colornum] = ColorClass(v.colornum)
+        all_color_classes[v.colornum].add_vertex(v)
+    return all_color_classes
+
+
+def list_of_colour_classes_bigger_eg_than_k(all_color_classes, k_size):
+    temp = []
+    for color_class in all_color_classes.values():
+        if color_class.size() >= k_size:
+            temp.append(color_class)
+    return temp
 
 
 def get_colour_class_list(g):

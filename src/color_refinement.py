@@ -7,7 +7,7 @@ def color_refinement(in_graph):
     initialize_colornum(in_graph)
     all_colors = []
     dictionary_vertices_neighbour_colors = {}
-    n = len(in_graph.vertices)
+    number_of_verticies = len(in_graph.vertices)
 
     for v in in_graph.vertices:
         if v.colornum not in all_colors:
@@ -19,15 +19,15 @@ def color_refinement(in_graph):
         dictionary_vertices_neighbour_colors[v.label] = {}
 
     for v in in_graph.vertices:
-        for i in range(n + different_colors + 1):
+        for i in range(number_of_verticies + different_colors + 1):
             dictionary_vertices_neighbour_colors[v.label][i] = 0
 
-    for x in all_colors:
-        if x <= (n + different_colors):
+    for color in all_colors:
+        if color <= (number_of_verticies + different_colors):
             ls_of_same_color_vertices = []
-            if count_vertices(x, in_graph):  # if vertices with color x>=2
+            if count_vertices(color, in_graph):  # if vertices with color x>=2
                 for v in in_graph.vertices:
-                    if v.colornum == x:
+                    if v.colornum == color:
                         ls_of_same_color_vertices.append(v)
 
                 for v in ls_of_same_color_vertices:
