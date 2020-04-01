@@ -4,7 +4,6 @@ from src.graph_io import *
 
 
 def color_refinement(in_graph):
-    initialize_colornum(in_graph)
     all_colors = []
     dictionary_vertices_neighbour_colors = {}
     number_of_verticies = len(in_graph.vertices)
@@ -91,7 +90,9 @@ def test_color_refinement():
 
     with open(new_path, 'r') as file_stream:
         graph_from_file = load_graph(file_stream)
-        output_graph = color_refinement(graph_from_file)
+
+    initialize_colornum(graph_from_file)
+    output_graph = color_refinement(graph_from_file)
 
     with open("color_refined_graph.dot", 'w') as file_stream:
         write_dot(output_graph, file_stream)

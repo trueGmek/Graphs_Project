@@ -1,5 +1,5 @@
-from src.color_refinement import *
 from src.color_class import ColorClass
+from src.color_refinement import *
 
 '''
 This function will be called when we got stable colorings, so I will not check that
@@ -7,54 +7,58 @@ This function will be called when we got stable colorings, so I will not check t
 
 
 def test_branching():
-    open_path = os.path.relpath('../graphs/example_balanced_graph_1.gr', os.path.dirname(__file__))
-    with open(open_path, 'r') as file:
+    open_path_1 = os.path.relpath('../graphs/example_balanced_graph_1.gr', os.path.dirname(__file__))
+    open_path_2 = os.path.relpath('../graphs/example_balanced_graph_2.gr', os.path.dirname(__file__))
+    with open(open_path_1, 'r') as file:
         g = load_graph(file)
-    g = color_refinement(g)
-    h = g
-    print("GRAPH g = h:")
-    print(g)
-    print("color list:\n", str(get_coloring(g)))
-    print("Is balanced: ", str(is_balanced(g, h)))
-    print("Is g bijection of h: ", str(is_bijection(g, h)))
-    list_of_colour_classes_bigger_eg_than_k(get_color_classes(g), 11)
+    with open(open_path_2, 'r') as file:
+        h = load_graph(file)
+
+    initialize_colornum(g)
+    initialize_colornum(h)
+    branching(g, h)
 
 
 def branching(g, h):
     g, h = color_refinement(g), color_refinement(h)
-    colour_class_list = get_colour_class_list(g)
-    index_of_color_class = 0  # index of color class that has more than two members in one graph
-    first_vertex_from_color_class = None
-    highest_color = 0
     if not is_balanced(g, h):
         return 0
     if is_bijection(g, h):
         return 1
+
     num = 0
+    index = 0
 
-    print(get_coloring(g))
+    g_color_classes = list_of_colour_classes_bigger_eq_than_k(get_color_classes(g), 2)
+    # we select the first object from the list that has all the color classes that have size greater than two
+    selected_color_class = g_color_classes[index]
+    important_vertex_form_g = selected_color_class.vertices[0]  # select first vertex from first color class
 
-    for key, value in get_coloring(g).items():
-        if key > highest_color:
-            highest_color = key
-        if value >= key + 2:
-            index_of_color_class = key
-            first_vertex_from_color_class = colour_class_list[index_of_color_class][0]
-            first_vertex_from_color_class.colornum = highest_color + 1
-            break
-
-        for vertex in g.vertices:
-            if vertex.label == first_vertex_from_color_class.label:
-                vertex.colornum = first_vertex_from_color_class.colornum
-
-    for vertex in get_colour_class_list(h)[index_of_color_class]:
-        for v in h.vertices:
-            if v.label == vertex.label:
-                v.colornum = highest_color
+    for vertex in get_color_class_form_h_that_is_equal_to_input_color_class(h, selected_color_class).vertices:
+        previous_colornum = vertex.colornum
+        important_vertex_form_g.colornum = get_highest_colornum(get_color_classes(g)) + 1
+        vertex.colornum = important_vertex_form_g.colornum
         num += branching(g, h)
+        vertex.colornum = previous_colornum
 
-    print("Number of ", "I S O M O R P H I S M S", num, " K U R W A")
+    print("Number of isomorphisms: ", num)
+
     return num
+
+
+def get_color_class_form_h_that_is_equal_to_input_color_class(h, input_color_class):
+    for color_class in get_color_classes(h).values():
+        if (color_class.colornum == input_color_class.colornum
+                and len(color_class.vertices) == len(input_color_class.vertices)):
+            return color_class
+
+
+def get_highest_colornum(list_of_color_classes):
+    highest_colornum = -1
+    for color_class in list_of_color_classes.values():
+        if color_class.colornum > highest_colornum:
+            highest_colornum = color_class.colornum
+    return highest_colornum
 
 
 def is_balanced(g, h):
@@ -71,7 +75,7 @@ def is_bijection(g, h):
         return False
     else:
         for key, value in g_coloring.items():
-            if key != value:
+            if value != 1:
                 return False
         return True
 
@@ -85,7 +89,7 @@ def get_color_classes(g):
     return all_color_classes
 
 
-def list_of_colour_classes_bigger_eg_than_k(all_color_classes, k_size):
+def list_of_colour_classes_bigger_eq_than_k(all_color_classes, k_size):
     temp = []
     for color_class in all_color_classes.values():
         if color_class.size() >= k_size:
@@ -106,7 +110,7 @@ def get_coloring(g):
     coloring = {}
     for v in g.vertices:
         if v.colornum not in coloring:
-            coloring[v.colornum] = v.colornum
+            coloring[v.colornum] = 1
         else:
             coloring[v.colornum] += 1
     return coloring
