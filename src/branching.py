@@ -8,7 +8,7 @@ This function will be called when we got stable colorings, so I will not check t
 
 def test_branching():
     open_path_1 = os.path.relpath('../graphs/example_balanced_graph_1.gr', os.path.dirname(__file__))
-    open_path_2 = os.path.relpath('../graphs/example_balanced_graph_2.gr', os.path.dirname(__file__))
+    open_path_2 = os.path.relpath('../graphs/example_balanced_graph_1.gr', os.path.dirname(__file__))
     with open(open_path_1, 'r') as file:
         g = load_graph(file)
     with open(open_path_2, 'r') as file:
@@ -24,6 +24,10 @@ def branching(g, h):
     if not is_balanced(g, h):
         return 0
     if is_bijection(g, h):
+        with open("graph_after_branching_g.dot", 'w') as file_stream:
+            write_dot(g, file_stream)
+        with open("graph_after_branching_h.dot", 'w') as file_stream:
+            write_dot(h, file_stream)
         return 1
 
     num = 0
