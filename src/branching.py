@@ -7,16 +7,13 @@ This function will be called when we got stable colorings, so I will not check t
 
 
 def test_branching():
-    open_path_1 = os.path.relpath('../graphs/example_balanced_graph_1.gr', os.path.dirname(__file__))
-    open_path_2 = os.path.relpath('../graphs/example_balanced_graph_1.gr', os.path.dirname(__file__))
-    with open(open_path_1, 'r') as file:
-        g = load_graph(file)
-    with open(open_path_2, 'r') as file:
-        h = load_graph(file)
+    graphs = read_list_of_graphs_from_file('../graphs/branching/lecture_graphs.grl')
 
-    initialize_colornum(g)
-    initialize_colornum(h)
-    branching(g, h)
+    for graph in graphs:
+        initialize_colornum(graph)
+    num = branching(graphs[0], graphs[1])
+    
+    print("Number of isomorphisms: ", num)
 
 
 def branching(g, h):
@@ -24,10 +21,6 @@ def branching(g, h):
     if not is_balanced(g, h):
         return 0
     if is_bijection(g, h):
-        with open("graph_after_branching_g.dot", 'w') as file_stream:
-            write_dot(g, file_stream)
-        with open("graph_after_branching_h.dot", 'w') as file_stream:
-            write_dot(h, file_stream)
         return 1
 
     num = 0
@@ -44,8 +37,6 @@ def branching(g, h):
         vertex.colornum = important_vertex_form_g.colornum
         num += branching(g, h)
         vertex.colornum = previous_colornum
-
-    print("Number of isomorphisms: ", num)
 
     return num
 
@@ -118,3 +109,14 @@ def get_coloring(g):
         else:
             coloring[v.colornum] += 1
     return coloring
+
+
+def read_list_of_graphs_from_file(path):
+    graphs = []
+    open_path = os.path.relpath(path, os.path.dirname(__file__))
+    with open(open_path, 'r') as file:
+        for graph in load_graph(file, Graph, True):
+            for g in graph:
+                if len(g) > 0:
+                    graphs.append(g)
+    return graphs
