@@ -1,5 +1,5 @@
-from random import randrange
 import copy
+import random
 
 from src.color_class import ColorClass
 from src.color_refinement import *
@@ -17,44 +17,41 @@ def test_branching():
 
 
 def count_isomorphism(g, h):
-    previous_g, previous_h = copy.deepcopy(g), copy.deepcopy(h)
-    previous_g, previous_h = color_refinement(previous_g), color_refinement(previous_h)
-    print("After refinement\n", get_coloring(previous_g), get_coloring(previous_h))
-    print("Before refinement\n", get_coloring(g), get_coloring(h))
-    if not is_balanced(previous_g, previous_h):
-        print("RETURN ZERO")
+    g, h = color_refinement(g), color_refinement(h)
+    # print("After refinement\n", get_coloring(g), get_coloring(h))
+    if not is_balanced(g, h):
+        # print("RETURN ZERO")
         return 0
     else:
-        print("BALANCED")
-    if is_bijection(previous_g, previous_h):
-        print("RETURN ONE")
+        # print("BALANCED")
+        pass
+    if is_bijection(g, h):
+        # print("RETURN ONE")
         return 1
 
-    g, h = color_refinement(g), color_refinement(h)
-    print("After checking \n", get_coloring(g), get_coloring(h))
     num = 0
-    index = 0
 
     g_color_classes = list_of_colour_classes_bigger_eq_than_k(get_color_classes(g), 2)
 
-    # we select the first object from the list that has all the color classes that have size greater than two
-    selected_color_class = g_color_classes[index]
+    # we select random object from the list that has all the color classes that have size greater than two
+    selected_color_class = random.choice(g_color_classes)
 
-    # select first vertex from first color class
-    important_vertex_form_g = selected_color_class.vertices[randrange(len(selected_color_class.vertices))]
+    # select random vertex from first color class
+    important_vertex_form_g = random.choice(selected_color_class.vertices)
     color_class_from_h = get_color_class_form_h_that_is_equal_to_input_color_class(h, selected_color_class)
 
+    # iterate over every vertex from h that is the same color class as selected_color_class
     for vertex in color_class_from_h.vertices:
         previous_colornum = vertex.colornum
         previous_important_colornum = important_vertex_form_g.colornum
         important_vertex_form_g.colornum = get_highest_colornum(get_color_classes(g)) + 1
         vertex.colornum = important_vertex_form_g.colornum
-        print("FIRST loop coloring\n", get_coloring(g), get_coloring(h))
-        print("Is it balanced: ", is_balanced(g, h))
-        num += count_isomorphism(g, h)
+        # print("FIRST loop coloring\n", get_coloring(g), get_coloring(h))
+        # print("Is it balanced: ", is_balanced(g, h))
+        num += count_isomorphism(copy.deepcopy(g), copy.deepcopy(h))
         vertex.colornum = previous_colornum
         important_vertex_form_g.colornum = previous_important_colornum
-        print("SECOND loop coloring\n", get_coloring(g), get_coloring(h))
+        # print("SECOND loop coloring\n", get_coloring(g), get_coloring(h))
     return num
 
 
