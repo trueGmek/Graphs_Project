@@ -11,12 +11,12 @@ def test_branching():
 
     for graph in graphs:
         initialize_colornum(graph)
-    num = branching(graphs[0], graphs[1])
+    num = count_isomorphism(graphs[0], graphs[1])
     
     print("Number of isomorphisms: ", num)
 
 
-def branching(g, h):
+def count_isomorphism(g, h):
     g, h = color_refinement(g), color_refinement(h)
     if not is_balanced(g, h):
         return 0
@@ -35,7 +35,7 @@ def branching(g, h):
         previous_colornum = vertex.colornum
         important_vertex_form_g.colornum = get_highest_colornum(get_color_classes(g)) + 1
         vertex.colornum = important_vertex_form_g.colornum
-        num += branching(g, h)
+        num += count_isomorphism(g, h)
         vertex.colornum = previous_colornum
 
     return num
