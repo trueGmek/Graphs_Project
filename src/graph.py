@@ -36,7 +36,6 @@ class Vertex(object):
         representation of the graph ambiguous.)
         :param graph: The graph that this `Vertex` is a part of
         :param label: Optional parameter to specify a label for the
-        :param colour: Colour of the vertex for color refinement process
         """
         if label is None:
             label = graph._next_label()
@@ -198,7 +197,7 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, directed: bool, n: int = 0, simple: bool = False):
+    def __init__(self, directed: bool, n: int=0, simple: bool=False):
         """
         Creates a graph.
         :param directed: Whether the graph should behave as a directed graph.
@@ -293,7 +292,7 @@ class Graph(object):
     def add_edge(self, edge: "Edge"):
         """
         Add an edge to the graph. And if necessary also the vertices.
-        Includes `some checks in case the graph should stay simple.
+        Includes some checks in case the graph should stay simple.
         :param edge: The edge to be added
         """
 
@@ -320,25 +319,8 @@ class Graph(object):
         :param other: Graph to add to `self'.
         :return: New graph which is a disjoint union of `self' and `other'.
         """
-        result_graph = Graph(self._directed, len(self.vertices) + len(other.vertices))
-        nodesdict = {}
-        i = 0
-        for v in self.vertices:
-            nodesdict[v] = result_graph.vertices[i]
-            i += 1
-
-        for g in other.vertices:
-            nodesdict[g] = result_graph.vertices[i]
-            i += 1
-
-        for self_edge in self.edges:
-            _edge = Edge(nodesdict[self_edge.tail], nodesdict[self_edge.head])
-            result_graph.add_edge(_edge)
-
-        for other_edge in other.edges:
-            _edge = Edge(nodesdict[other_edge.tail], nodesdict[other_edge.head])
-            result_graph.add_edge(_edge)
-            return result_graph
+        # TODO: implementation
+        pass
 
     def __iadd__(self, other: Union[Edge, Vertex]) -> "Graph":
         """

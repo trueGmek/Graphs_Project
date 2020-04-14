@@ -1,8 +1,8 @@
-from src.branching import test_branching
+from src.branching_improved import test_improved_branching
 
 
 def main():
-    test_branching()
+    test_improved_branching()
 
 
 if __name__ == "__main__":

@@ -4,9 +4,6 @@ import random
 from src.color_class import ColorClass
 from src.color_refinement import *
 
-'''
-This function will be called when we got stable colorings, so I will not check that
-'''
 
 
 def test_branching():
@@ -17,7 +14,7 @@ def test_branching():
 
 
 def count_isomorphism(g, h):
-    g, h = color_refinement(g), color_refinement(h)
+    g, h = color_refinement(g), color_refinement(h)  # better to do this on disjoint union
     # print("After refinement\n", get_coloring(g), get_coloring(h))
     if not is_balanced(g, h):
         # print("RETURN ZERO")
@@ -34,23 +31,23 @@ def count_isomorphism(g, h):
     g_color_classes = list_of_colour_classes_bigger_eq_than_k(get_color_classes(g), 2)
 
     # we select random object from the list that has all the color classes that have size greater than two
-    selected_color_class = random.choice(g_color_classes)
+    selected_color_class = g_color_classes[0]
 
     # select random vertex from first color class
     important_vertex_form_g = random.choice(selected_color_class.vertices)
     color_class_from_h = get_color_class_form_h_that_is_equal_to_input_color_class(h, selected_color_class)
 
+    important_vertex_form_g.colornum = get_highest_colornum(get_color_classes(g)) + 1
     # iterate over every vertex from h that is the same color class as selected_color_class
     for vertex in color_class_from_h.vertices:
         previous_colornum = vertex.colornum
-        previous_important_colornum = important_vertex_form_g.colornum
-        important_vertex_form_g.colornum = get_highest_colornum(get_color_classes(g)) + 1
         vertex.colornum = important_vertex_form_g.colornum
+
         # print("FIRST loop coloring\n", get_coloring(g), get_coloring(h))
         # print("Is it balanced: ", is_balanced(g, h))
-        num += count_isomorphism(copy.deepcopy(g), copy.deepcopy(h))
+
+        num += count_isomorphism(copy.deepcopy(g), copy.deepcopy(h))  # make dictionary that maps vertices to colors
         vertex.colornum = previous_colornum
-        important_vertex_form_g.colornum = previous_important_colornum
         # print("SECOND loop coloring\n", get_coloring(g), get_coloring(h))
     return num
 
