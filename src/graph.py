@@ -112,6 +112,10 @@ class Vertex(object):
         """
         return sum(map(len, self._incidence.values()))
 
+    @graph.setter
+    def graph(self, value: "New graph"):
+        self._graph = value
+
 
 class Edge(object):
     """
@@ -197,7 +201,7 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, directed: bool, n: int=0, simple: bool=False):
+    def __init__(self, directed: bool, n: int = 0, simple: bool = False):
         """
         Creates a graph.
         :param directed: Whether the graph should behave as a directed graph.
@@ -319,8 +323,14 @@ class Graph(object):
         :param other: Graph to add to `self'.
         :return: New graph which is a disjoint union of `self' and `other'.
         """
-        # TODO: implementation
-        pass
+        for vertex in other.vertices:
+            vertex.graph = self
+            self.add_vertex(vertex)
+
+        for edge in other.edges:
+            self.add_edge(edge)
+
+        return self
 
     def __iadd__(self, other: Union[Edge, Vertex]) -> "Graph":
         """

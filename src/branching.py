@@ -5,7 +5,6 @@ from src.color_class import ColorClass
 from src.color_refinement import *
 
 
-
 def test_branching():
     graphs = read_list_of_graphs_from_file('../graphs/branching/lecture_graphs.grl')
     for graph in graphs:
@@ -19,9 +18,6 @@ def count_isomorphism(g, h):
     if not is_balanced(g, h):
         # print("RETURN ZERO")
         return 0
-    else:
-        # print("BALANCED")
-        pass
     if is_bijection(g, h):
         # print("RETURN ONE")
         return 1
@@ -123,11 +119,8 @@ def get_coloring(g):
 
 
 def read_list_of_graphs_from_file(path):
-    graphs = []
     open_path = os.path.relpath(path, os.path.dirname(__file__))
     with open(open_path, 'r') as file:
-        for graph in load_graph(file, Graph, True):
-            for g in graph:
-                if len(g) > 0:
-                    graphs.append(g)
-    return graphs
+        problematic_file = load_graph(file, Graph, True)
+
+    return problematic_file[0]
