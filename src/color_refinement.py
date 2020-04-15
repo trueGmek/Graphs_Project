@@ -1,11 +1,12 @@
-import itertools as iter
+import os
+from queue import Queue
 
 from src.graph_io import *
 
 
-def get_coloring(G):
+def get_coloring(graph):
     coloring = {}
-    for v in G.vertices:
+    for v in graph.vertices:
         if v.colornum not in coloring:
             coloring[v.colornum] = 1
         else:
@@ -16,52 +17,54 @@ def get_coloring(G):
 def have_identically_colored_neighbourhoods(u, v):
     if u.degree != v.degree:
         return False
-    coloring_u = {}
-
-    coloring_v = {}
-
     for neighbour_u in u.neighbours:
-        if neighbour_u.colornum not in coloring_u:
-            coloring_u[neighbour_u.colornum] = 1
-        else:
-            coloring_u[neighbour_u.colornum] += 1
-
-    for neighbour_v in v.neighbours:
-        if neighbour_v.colornum not in coloring_v:
-            coloring_v[neighbour_v.colornum] = 1
-        else:
-            coloring_v[neighbour_v.colornum] += 1
-    if coloring_u != coloring_v:
-        return False
+        for neighbour_v in v.neighbours:
+            if not (neighbour_u.colornum == neighbour_v.colornum and neighbour_u != neighbour_v):
+                return False
     return True
 
 
-with open("../examplegraph.gr") as f:
-    G = load_graph(f)
-    n = len(G.vertices)
-    list_of_dicts = []
-    tmp_dict = {}
+def count_nr_of_neighbors_of_color(vertices, col):
+    result = {}
+    for v in vertices:
+        result[v] = 0
+        for u in v.neighbours:
+            if u.colour == col:
+                result[v] += 1
+    return result
 
-    # initial coloring - each vertex by degree
-    for v in G.vertices:
-        v.colornum = v.degree
-    i = 0
-    while True:
-        i += 1
-        previous_coloring = get_coloring(G)
-        with open("../{}.dot".format(i), 'w') as g:
-            write_dot(G, g)
-        j = i
-        for u, v in iter.combinations(G.vertices, 2):
-            if u.colornum == v.colornum and not have_identically_colored_neighbourhoods(u, v):
-                tmp_dict[u.colornum] = 1
-            list_of_dicts.append(tmp_dict)
-        for dict1, dict2 in iter.combinations(list_of_dicts, 2):
-            if dict1 != dict2:
 
-        curr_coloring = get_coloring(G)
-        if previous_coloring == curr_coloring:
-            break
+def color_refinement(graph):
+    initial_coloring = [1] * len(graph.vertices)
+    vertices_of_color = {1: graph.vertices}
+    c_min = 1
+    c_max = 1
+    colors = Queue()
+    colors.put(1)
 
-    with open("../color_refined_graph.dot", 'w') as g:
-        write_dot(G, g)
+    while colors:
+        c = colors.get()
+        # count nr of neighbors of color c of every vertex
+        d = count_nr_of_neighbors_of_color(graph.vertices, c)
+        # ordered partition of vertices v sorted by (initial coloring, num of neighbours of color c)
+        b = sorted(graph.vertices, key=lambda i: (initial_coloring, d))
+        for i in range(c_min, c_max):
+            k1, k2 = 0, len(b)
+            if i != max(b):
+                colors.put(i)
+        c_min = c_max + 1
+        c_max += len(b)
+        for x in range(c_min, c_max):
+            vertices_of_color[x] = b[x + 1 - c_min]
+            initial_coloring = [x for x in vertices_of_color[x]]
+    return initial_coloring
+
+
+def test_color_refinement():
+    open_path = os.path.relpath('../graphs/examplegraph_2.gr', os.path.dirname(__file__))
+    with open(open_path, 'r') as f:
+        G = load_graph(f)
+        result = color_refinement(G)
+        save_path = os.path.relpath('../graphs/color_refined_examplegraph_2.dot', os.path.dirname(__file__))
+        with open(save_path, 'w') as g:
+            write_dot(result, g)
