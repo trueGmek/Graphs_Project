@@ -2,9 +2,9 @@ from src.color_class import ColorClass
 from src.partition_refinement import *
 
 
-def test_improved_branching():
-    graphs = read_list_of_graphs_from_file('../graphs/branching/torus144.grl')
-    disjoint_graph = graphs[5] + graphs[9]
+def test_branching():
+    graphs = read_list_of_graphs_from_file('../graphs/branching/trees36.grl')
+    disjoint_graph = graphs[1] + graphs[4]
 
     disjoint_graph = partition_refinement(disjoint_graph, len(disjoint_graph.vertices))
     start = time.time()
