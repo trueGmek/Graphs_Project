@@ -28,7 +28,7 @@ class Vertex(object):
     except for `__str__`.
     """
 
-    def __init__(self, graph: "Graph", label=None, colour=None):
+    def __init__(self, graph: "Graph", label=None):
         """
         Creates a vertex, part of `graph`, with optional label `label`.
         (Labels of different vertices may be chosen the same; this does
@@ -36,24 +36,20 @@ class Vertex(object):
         representation of the graph ambiguous.)
         :param graph: The graph that this `Vertex` is a part of
         :param label: Optional parameter to specify a label for the
-        :param colour: Colour of the vertex for color refinement process
         """
         if label is None:
             label = graph._next_label()
-        if colour is None:
-            colour = 0
 
         self._graph = graph
         self.label = label
         self._incidence = {}
-        self.colour = colour
 
     def __repr__(self):
         """
         A programmer-friendly representation of the vertex.
         :return: The string to approximate the constructor arguments of the `Vertex'
         """
-        return 'Vertex(label={}, #incident={}, colour#={})'.format(self.label, len(self._incidence),self.colour)
+        return 'Vertex(label={}, #incident={})'.format(self.label, len(self._incidence))
 
     def __str__(self) -> str:
         """
@@ -115,6 +111,10 @@ class Vertex(object):
         Returns the degree of the vertex
         """
         return sum(map(len, self._incidence.values()))
+
+    @graph.setter
+    def graph(self, value: "New graph"):
+        self._graph = value
 
 
 class Edge(object):
@@ -296,7 +296,7 @@ class Graph(object):
     def add_edge(self, edge: "Edge"):
         """
         Add an edge to the graph. And if necessary also the vertices.
-        Includes `some checks in case the graph should stay simple.
+        Includes some checks in case the graph should stay simple.
         :param edge: The edge to be added
         """
 
@@ -318,30 +318,25 @@ class Graph(object):
         edge.tail._add_incidence(edge)
 
     def __add__(self, other: "Graph") -> "Graph":
+
         """
         Make a disjoint union of two graphs.
         :param other: Graph to add to `self'.
         :return: New graph which is a disjoint union of `self' and `other'.
         """
-        result_graph = Graph(self._directed, len(self.vertices) + len(other.vertices))
-        nodesdict = {}
-        i = 0
-        for v in self.vertices:
-            nodesdict[v] = result_graph.vertices[i]
-            i += 1
+        new_graph = Graph(False, len(self.vertices) + len(other.vertices))
 
-        for g in other.vertices:
-            nodesdict[g] = result_graph.vertices[i]
-            i += 1
+        v_map_self = {v: u for v, u in zip(self.vertices, new_graph.vertices)}
+        v_map_other = {v: u for v, u in zip(other.vertices, new_graph.vertices[len(self.vertices):])}
 
-        for self_edge in self.edges:
-            _edge = Edge(nodesdict[self_edge.tail], nodesdict[self_edge.head])
-            result_graph.add_edge(_edge)
+        for edge in self.edges:
+            new_edge = Edge(v_map_self[edge.head], v_map_self[edge.tail])
+            new_graph.add_edge(new_edge)
+        for edge in other.edges:
+            new_edge = Edge(v_map_other[edge.head], v_map_other[edge.tail])
+            new_graph.add_edge(new_edge)
 
-        for other_edge in other.edges:
-            _edge = Edge(nodesdict[other_edge.tail], nodesdict[other_edge.head])
-            result_graph.add_edge(_edge)
-            return result_graph
+        return new_graph
 
     def __iadd__(self, other: Union[Edge, Vertex]) -> "Graph":
         """

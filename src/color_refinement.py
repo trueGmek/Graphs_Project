@@ -35,7 +35,7 @@ def count_nr_of_neighbors_of_color(vertices, col):
 
 
 def color_refinement(graph):
-    initial_coloring = [1] * len(graph.vertices)
+    initial_coloring = [v.degree for v in graph.vertices]
     vertices_of_color = {1: graph.vertices}
     c_min = 1
     c_max = 1
@@ -47,7 +47,7 @@ def color_refinement(graph):
         # count nr of neighbors of color c of every vertex
         d = count_nr_of_neighbors_of_color(graph.vertices, c)
         # ordered partition of vertices v sorted by (initial coloring, num of neighbours of color c)
-        b = sorted(graph.vertices, key=lambda i: (initial_coloring, d))
+        b = sorted(vertices_of_color, key=lambda i: (initial_coloring, d))
         for i in range(c_min, c_max):
             k1, k2 = 0, len(b)
             if i != max(b):

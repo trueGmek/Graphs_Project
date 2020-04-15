@@ -246,7 +246,8 @@ def write_dot(graph: Graph, f: IO[str], directed=False):
 
 if __name__ == "__main__":
     from mygraphs import MyGraph
-    with open('examplegraph.gr') as f:
+
+    with open('examplegraph_2.gr') as f:
         G = load_graph(f, MyGraph)
     print(G)
     G.del_vert(next(iter(G.vertices)))
