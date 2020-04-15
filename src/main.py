@@ -1,5 +1,9 @@
-from src.color_refinement import test_color_refinement
-from src.branching import test_branching
+from src.branching_improved import test_improved_branching
 
-test_color_refinement()
-test_branching()
+
+def main():
+    test_improved_branching()
+
+
+if __name__ == "__main__":
+    main()

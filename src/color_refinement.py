@@ -32,9 +32,7 @@ def color_refinement(in_graph):
                 for v in ls_of_same_color_vertices:
                     for w in v.neighbours:
                         if w.colornum not in dictionary_vertices_neighbour_colors[v.label]:
-                            with open("color_refined_graph.dot", 'w') as g:
-                                write_dot(in_graph, g)
-                            exit()
+                            pass
                         else:
                             dictionary_vertices_neighbour_colors[v.label][w.colornum] += 1
 
@@ -86,7 +84,7 @@ def count_vertices(color, in_graph):
 
 def test_color_refinement():
     cur_path = os.path.dirname(__file__)
-    new_path = os.path.relpath('../graphs/example_balanced_graph_1.gr', cur_path)
+    new_path = os.path.relpath('../graphs/examplegraph.gr', cur_path)
 
     with open(new_path, 'r') as file_stream:
         graph_from_file = load_graph(file_stream)
@@ -94,5 +92,5 @@ def test_color_refinement():
     initialize_colornum(graph_from_file)
     output_graph = color_refinement(graph_from_file)
 
-    with open("color_refined_graph.dot", 'w') as file_stream:
-        write_dot(output_graph, file_stream)
+    # with open("color_refined_graph.dot", 'w') as file_stream:
+    #     write_dot(output_graph, file_stream)
