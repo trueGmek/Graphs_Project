@@ -1,9 +1,3 @@
-import os
-import time
-
-from src.graph_io import *
-
-
 def second_coloring(G):
     all_numbers = []
     extra_partition = 0
