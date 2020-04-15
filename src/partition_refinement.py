@@ -60,27 +60,18 @@ def count_vertices(color, G):
 def change_colornum(list_prime, all_numbers, temp_list, G):
     start = 0
     for num in all_numbers:
-        if count_vertices(num, G):
-            prime = list_prime[start]
-            for v in G.vertices:
-                if v.degree >= 1 and v.colornum == num:
-                    for w in v.neighbours:
-                        temp_list[v.label] += (prime ** w.colornum)
+        prime = list_prime[start]
+        for v in G.vertices:
+            if v.degree >= 1 and v.colornum == num:
+                for w in v.neighbours:
+                    temp_list[v.label] += (prime ** w.colornum)
 
-            start += 1
+        start += 1
     # print(temp_list)
 
     for v in G.vertices:
         if temp_list[v.label] != 0:
-            if temp_list[v.label] not in all_numbers:
-                v.colornum = temp_list[v.label]
-
-    z = 1
-    for v in G.vertices:
-        if temp_list[v.label] != 0:
-            if temp_list[v.label] in all_numbers:
-                v.colornum = max(all_numbers) + z
-                z = z + 1
+            v.colornum = temp_list[v.label]
 
 
 def partition_refinement(G, n):
@@ -126,7 +117,7 @@ def partition_refinement(G, n):
     if 0 in all_numbers:
         all_numbers.remove(0)
 
-    # print(all_numbers)
+    # print(allnumbers)
     # print(prev_all_numbers)
 
     # x += 1
@@ -149,7 +140,7 @@ def partition_refinement(G, n):
         # print(all_numbers)
 
         a = 1
-        for i in range(all_numbers._len_()):
+        for i in range(len(all_numbers)):
             for v in G.vertices:
                 if v.colornum == all_numbers[i]:
                     temp_list[v.label] = a

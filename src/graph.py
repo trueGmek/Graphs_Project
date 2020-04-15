@@ -318,19 +318,25 @@ class Graph(object):
         edge.tail._add_incidence(edge)
 
     def __add__(self, other: "Graph") -> "Graph":
+
         """
         Make a disjoint union of two graphs.
         :param other: Graph to add to `self'.
         :return: New graph which is a disjoint union of `self' and `other'.
         """
-        for vertex in other.vertices:
-            vertex.graph = self
-            self.add_vertex(vertex)
+        new_graph = Graph(False, len(self.vertices) + len(other.vertices))
 
+        v_map_self = {v: u for v, u in zip(self.vertices, new_graph.vertices)}
+        v_map_other = {v: u for v, u in zip(other.vertices, new_graph.vertices[len(self.vertices):])}
+
+        for edge in self.edges:
+            new_edge = Edge(v_map_self[edge.head], v_map_self[edge.tail])
+            new_graph.add_edge(new_edge)
         for edge in other.edges:
-            self.add_edge(edge)
+            new_edge = Edge(v_map_other[edge.head], v_map_other[edge.tail])
+            new_graph.add_edge(new_edge)
 
-        return self
+        return new_graph
 
     def __iadd__(self, other: Union[Edge, Vertex]) -> "Graph":
         """
