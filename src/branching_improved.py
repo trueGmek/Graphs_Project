@@ -6,11 +6,6 @@ def test_improved_branching():
     graphs = read_list_of_graphs_from_file('../graphs/branching/torus144.grl')
     disjoint_graph = graphs[5] + graphs[9]
 
-    with open("color_refined_graph.dot_init", 'w') as file_stream:
-        write_dot(disjoint_graph, file_stream)
-
-    highest_colornum = 0
-
     disjoint_graph = partition_refinement(disjoint_graph, len(disjoint_graph.vertices))
     start = time.time()
     print(count_isomorphism([], [], disjoint_graph, get_highest_colornum(get_color_classes(disjoint_graph))))
