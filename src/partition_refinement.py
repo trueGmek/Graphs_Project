@@ -126,7 +126,7 @@ def partition_refinement(G, n):
     if 0 in all_numbers:
         all_numbers.remove(0)
 
-    # print(all_numbers)
+    # print(allnumbers)
     # print(prev_all_numbers)
 
     # x += 1
@@ -149,7 +149,7 @@ def partition_refinement(G, n):
         # print(all_numbers)
 
         a = 1
-        for i in range(all_numbers._len_()):
+        for i in range(len(all_numbers)):
             for v in G.vertices:
                 if v.colornum == all_numbers[i]:
                     temp_list[v.label] = a
