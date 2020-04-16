@@ -7,7 +7,7 @@ from src.graph_io import load_graph
 from src.partition_refinement import partition_refinement
 
 FILE_NAME_GI = '../graphs/basicGI3.grl'
-FILE_NAME_AUTO = '../graphs/basicAut2.gr'
+FILE_NAME_AUTO = '../graphs/basicAut1.gr'
 FILE_NAME_ISO = '../graphs/basicGIAut.grl'
 
 
