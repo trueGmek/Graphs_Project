@@ -7,16 +7,17 @@ from src.graph_io import load_graph
 from src.partition_refinement import *
 
 
-def test_branching():
-    graphs = read_list_of_graphs_from_file('../graphs/branching/trees36.grl')
-    disjoint_graph = graphs[1] + graphs[4]
-
-    disjoint_graph = partition_refinement(disjoint_graph, len(disjoint_graph.vertices))
-    start = time.time()
-    print(count_isomorphism([], [], disjoint_graph, get_highest_colornum(get_color_classes(disjoint_graph))))
-    end = time.time()
-
-    print("TIME: ", end - start)
+# def test_branching():
+#     graphs = read_list_of_graphs_from_file('../graphs/branching/cubes3.grl')
+#     disjoint_graph = graphs[0] + graphs[1]
+#
+#     highest_colornum = set_up_colornum(disjoint_graph)
+#
+#     start = time.time()
+#     print(count_isomorphism([], [], disjoint_graph, highest_colornum))
+#     end = time.time()
+#
+#     print("TIME: ", end - start)
 
 
 def count_isomorphism(D, I, disjoint_union, highest_colornum):
@@ -46,6 +47,15 @@ def count_isomorphism(D, I, disjoint_union, highest_colornum):
         break
 
     return num
+
+
+def set_up_colornum(graph):
+    highest_colornum = 0
+    for vertex in graph.vertices:
+        vertex.colornum = vertex.degree
+        if vertex.degree > highest_colornum:
+            highest_colornum = vertex.degree + 1
+    return highest_colornum
 
 
 def get_coloring(vertices):
