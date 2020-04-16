@@ -1,13 +1,14 @@
 import os
+from time import time
 
-from src.branching import is_bijection, count_isomorphism, set_up_colornum
+from src.branching import count_isomorphism, set_up_colornum
 from src.graph import Graph
 from src.graph_io import load_graph
 from src.partition_refinement import partition_refinement
 
-FILE_NAME_GI = '../graphs/branching/products72.grl'
-FILE_NAME_AUTO = '../graphs/branching/products72.grl'
-FILE_NAME_ISO = '../graphs/branching/products72.grl'
+FILE_NAME_GI = '../graphs/basicGI3.grl'
+FILE_NAME_AUTO = '../graphs/basicAut2.gr'
+FILE_NAME_ISO = '../graphs/basicAut1.gr'
 
 
 def do_the_tests():
@@ -17,14 +18,24 @@ def do_the_tests():
         print("Sets of isomorphic graphs:")
         graphs = read_list_of_graphs_from_file(FILE_NAME_GI)
         n = len(graphs)
-        previous_checks = {}
-
+        previous_checks = []
+        tf = 0
         for i in range(n):
+            if i in previous_checks:
+                continue
+            isomorphic_graphs = [i]
             for j in range(i + 1, n):
                 disjoint_graph = graphs[i] + graphs[j]
                 highest_colornum = set_up_colornum(disjoint_graph)
+                t1 = time()
                 if count_isomorphism([], [], disjoint_graph, highest_colornum) > 1:
-                    print('[', i, j, ']')
+                    isomorphic_graphs.append(j)
+                    previous_checks.append(j)
+                t2 = time()
+                tf += (t2 - t1)
+            previous_checks.append(i)
+            print(str(isomorphic_graphs))
+        print("Time of computation [s]: {}".format(tf))
 
     if x == '1':
         print("Graph: Number of automorphisms:")
