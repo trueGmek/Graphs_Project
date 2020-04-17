@@ -6,9 +6,9 @@ from src.graph import Graph
 from src.graph_io import load_graph
 from src.partition_refinement import partition_refinement
 
-FILE_NAME_GI = '../graphs/basicGI3.grl'
-FILE_NAME_AUTO = '../graphs/basicAut1.gr'
-FILE_NAME_ISO = '../graphs/basicGIAut.grl'
+FILE_NAME_GI = '../basics/basicGI3.grl'
+FILE_NAME_AUTO = '../basics/basicAut1.grl'
+FILE_NAME_ISO = '../basics/basicGIAut.grl'
 
 
 def do_the_tests():
@@ -71,7 +71,6 @@ def do_the_tests():
                     list_of_sets.append(j)
                 t2 = time()
                 tf += (t2 - t1)
-
         print("Graph: Number of automorphisms:")
         g_counter = 0
         for g in graphs:
@@ -98,4 +97,4 @@ def read_list_of_graphs_from_file(path):
 def print_the_welcome_message():
     print("For GI select: 0\n"
           "For # of Automorphisms: 1\n"
-          "For # Isomorphism between two graphs: 2")
+          "For # Isomorphism between every pair of graphs: 2")
