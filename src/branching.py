@@ -1,10 +1,10 @@
 import os
-import time
 
-from src.color_class import ColorClass
+from color_class import ColorClass
+from partition_refinement import *
+
 from src.graph import Graph
 from src.graph_io import load_graph
-from src.partition_refinement import *
 
 
 # def test_branching():

@@ -1,14 +1,11 @@
 import os
 from time import time
 
-from src.branching import count_isomorphism, set_up_colornum
+from branching import count_isomorphism, set_up_colornum
+from partition_refinement import partition_refinement
+
 from src.graph import Graph
 from src.graph_io import load_graph
-from src.partition_refinement import partition_refinement
-
-FILE_NAME_GI = '../basics/basicGI3.grl'
-FILE_NAME_AUTO = '../basics/basicAut1.grl'
-FILE_NAME_ISO = '../basics/basicGIAut.grl'
 
 
 def do_the_tests():
@@ -16,8 +13,18 @@ def do_the_tests():
     x = input()
     tf = 0
     if x == '0':
+        file_name = input("Please choose which file you wish to work on: \n"
+                          "For basicGI1.grl select: 1\n"
+                          "For basicGI2.grl select: 2\n"
+                          "For basicGI3.grl select: 3\n")
+        if file_name == '1':
+            file_name = 'graphs/basicGI1.grl'
+        elif file_name == '2':
+            file_name = 'graphs/basicGI2.grl'
+        else:
+            file_name = 'graphs/basicGI3.grl'
         print("Sets of isomorphic graphs:")
-        graphs = read_list_of_graphs_from_file(FILE_NAME_GI)
+        graphs = read_list_of_graphs_from_file(file_name)
         n = len(graphs)
         previous_checks = []
         for i in range(n):
@@ -38,8 +45,15 @@ def do_the_tests():
         print("Time of computation [s]: {}".format(tf))
 
     if x == '1':
+        file_name = input("Please choose which file you wish to work on: \n"
+                          "For basicAut1.gr select: 1\n"
+                          "For basicAut2.gr select: 2\n")
+        if file_name == '1':
+            file_name = 'graphs/basicAut1.gr'
+        else:
+            file_name = 'graphs/basicAut2.gr'
         print("Graph: Number of automorphisms:")
-        graphs = read_list_of_graphs_from_file(FILE_NAME_AUTO)
+        graphs = read_list_of_graphs_from_file(file_name)
         g_counter = 0
 
         t1 = time()
@@ -53,8 +67,10 @@ def do_the_tests():
         print("Time of computation [s]: {}".format(t2 - t1))
 
     if x == '2':
+        file_name = 'graphs/basicGIAut.grl'
+        print("This option operates on file basicGIAut.grl")
         print("Sets of isomorphic graphs: Number of automorphisms: ")
-        graphs = read_list_of_graphs_from_file(FILE_NAME_ISO)
+        graphs = read_list_of_graphs_from_file(file_name)
         n = len(graphs)
         list_of_sets = []
 
@@ -96,5 +112,5 @@ def read_list_of_graphs_from_file(path):
 
 def print_the_welcome_message():
     print("For GI select: 0\n"
-          "For # of Automorphisms: 1\n"
-          "For # Isomorphism between every pair of graphs: 2")
+          "For # of Automorphisms select: 1\n"
+          "For # Automorphisms for sets of Isomorphic graphs select: 2")

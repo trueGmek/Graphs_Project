@@ -1,0 +1,15 @@
+This file is the manual for Team 12's program for checking graph isomorphism.
+
+In this folder you'll find following files:
+- main.exe         -- executable file that contains the program
+- how-to.txt       -- this manual
+- graphs           -- a folder which contains:
+    - basicAut1.gr     --
+    - basicAut2.gr       |
+    - basicGI1.grl       |
+    - basicGI2.grl       |- files containing graphs or sets of graphs for testing the program.
+    - basicGI3.grl       |
+    - basicGIAut.grl   --
+
+After running the main.exe file simply follow the instructions. If you want to check how the program
+works with some other input graph or set of graphs, please replace the contents of one of the .gr[l] files.
