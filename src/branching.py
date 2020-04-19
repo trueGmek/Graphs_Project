@@ -129,7 +129,7 @@ def set_previous_coloring(graph, previous_coloring):
 
 
 def read_list_of_graphs_from_file(path):
-    open_path = os.path.relpath(path, os.path.dirname(__file__))
+    open_path = os.path.relpath(path, os.getcwd())
     with open(open_path, 'r') as file:
         problematic_file = load_graph(file, Graph, True)
 
